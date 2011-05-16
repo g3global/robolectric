@@ -25,11 +25,22 @@ public class ShadowTextView extends ShadowView {
     private int autoLinkMask;
     private CharSequence hintText;
     private int compoundDrawablePadding;
+    private CharSequence errorText;
 
     @Override public void applyAttributes() {
         super.applyAttributes();
         applyTextAttribute();
         applyCompoundDrawablesWithIntrinsicBoundsAttributes();
+    }
+    
+    @Implementation
+    public void setError(CharSequence error) {
+        this.errorText = error;
+    }
+
+    @Implementation
+    public CharSequence getError() {
+        return this.errorText;
     }
 
   @Implementation

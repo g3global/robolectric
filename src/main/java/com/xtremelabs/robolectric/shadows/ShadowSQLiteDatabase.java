@@ -138,10 +138,7 @@ public class ShadowSQLiteDatabase {
             throw new IllegalStateException("database not open");
         }
 
-        // Map 'autoincrement' (sqlite) to 'auto_increment' (h2).
-        String scrubbedSQL = sql.replaceAll("(?i:autoincrement)", "auto_increment");
-        // Map 'integer' (sqlite) to 'bigint(19)' (h2).
-        scrubbedSQL = scrubbedSQL.replaceAll("(?i:integer)", "bigint(19)");
+        String scrubbedSQL = scrubSQL(sql);
 
         try {
             connection.createStatement().execute(scrubbedSQL);
@@ -151,6 +148,19 @@ public class ShadowSQLiteDatabase {
             throw ase;
         }
     }
+
+	public String scrubSQL(String sql) {
+		
+		// Map 'autoincrement' (sqlite) to 'auto_increment' (h2).
+        String scrubbedSQL = sql.replaceAll("(?i:autoincrement)", "auto_increment");
+        
+        //Map instances where the table has the: "INTEGER PRIMARY KEY" directive, which is also a type of autoincrement
+        scrubbedSQL = scrubbedSQL.replaceAll("(?i:integer primary key)", "bigint(19) auto_increment");
+        
+        // Map 'integer' (sqlite) to 'bigint(19)' (h2).
+        scrubbedSQL = scrubbedSQL.replaceAll("(?i:integer)", "bigint(19)");
+		return scrubbedSQL;
+	}
 
     @Implementation
     public boolean isOpen() {

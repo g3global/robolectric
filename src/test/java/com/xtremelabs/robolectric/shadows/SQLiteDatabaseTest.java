@@ -173,6 +173,17 @@ public class SQLiteDatabaseTest {
         assertThat(resultSet.getInt(1), equalTo(1234));
         assertThat(resultSet.getString(4), equalTo("Chuck"));
     }
+    
+    @Test
+    public void testScrubSQL_Correctly_Modifies_SQLite_AutoIncrement_Statement() throws Exception {
+
+    	//With SQLite another way to create an auto increment column is to define the 
+    	// column as a INTEGER PRIMARY KEY
+    	String sqlToExecute = "CREATE TABLE test_table (_id INTEGER PRIMARY KEY, sample TEXT);";
+        String resultSQL = shadowOf(database).scrubSQL(sqlToExecute);
+
+        assertThat(resultSQL, equalTo("CREATE TABLE test_table (_id bigint(19) auto_increment, sample TEXT);"));
+    }
 
     @Test(expected = android.database.SQLException.class)
     public void testExecSQLException() throws Exception {
