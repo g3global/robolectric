@@ -44,6 +44,16 @@ public class TestHttpResponse extends HttpResponseStub {
     }
     
     @Override
+    public Header getFirstHeader(String s) {
+    	for(Header h : this.headers){
+    		if(h.getName().equals(s)){
+    			return h;
+    		}
+    	}
+    	return null;
+    }
+    
+    @Override
     public Header[] getAllHeaders() {
     	Header[] headersArray = new Header[this.headers.size()];
     	for(int counter = 0; counter < this.headers.size(); counter++){
