@@ -1,24 +1,56 @@
 package com.xtremelabs.robolectric.tester.org.apache.http;
 
-import com.xtremelabs.robolectric.shadows.StatusLineStub;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpVersion;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
+import org.apache.http.message.BasicHeader;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.xtremelabs.robolectric.shadows.StatusLineStub;
 
 public class TestHttpResponse extends HttpResponseStub {
 
     private int statusCode;
     private String responseBody;
-    private Header contentType;
     private TestStatusLine statusLine = new TestStatusLine();
     private TestHttpEntity httpEntity = new TestHttpEntity();
+    
+    private List<Header> headers = new ArrayList<Header>();  
+    
+    @Override
+    public void setHeader(Header header) {
+    	headers.add(header);
+    }
+    
+    @Override
+    public void setHeader(String s, String s1) {
+    	Header h = new BasicHeader(s, s1);
+    	setHeader(h);
+    }
+    
+    @Override
+    public void setHeaders(Header[] headers) {
+    	for(Header h: headers){
+    		setHeader(h);
+    	}
+    }
+    
+    @Override
+    public Header[] getAllHeaders() {
+    	Header[] headersArray = new Header[this.headers.size()];
+    	for(int counter = 0; counter < this.headers.size(); counter++){
+    		headersArray[counter] = this.headers.get(counter);
+    	}
+    	return headersArray;
+    }
 
     public TestHttpResponse(int statusCode, String responseBody) {
         this.statusCode = statusCode;
@@ -27,7 +59,7 @@ public class TestHttpResponse extends HttpResponseStub {
 
     public TestHttpResponse(int statusCode, String responseBody, Header contentType) {
         this(statusCode, responseBody);
-        this.contentType = contentType;
+        setHeader(contentType);
     }
 
     @Override public StatusLine getStatusLine() {
@@ -44,7 +76,7 @@ public class TestHttpResponse extends HttpResponseStub {
         }
         
         @Override public Header getContentType() {
-            return contentType;
+            return getFirstHeader("Content-Type");
         }
         
         @Override public boolean isStreaming() {
