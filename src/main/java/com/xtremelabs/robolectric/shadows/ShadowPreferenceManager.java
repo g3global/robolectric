@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.tester.android.content.TestSharedPreferences;
 import com.xtremelabs.robolectric.internal.Implementation;
 import com.xtremelabs.robolectric.internal.Implements;
@@ -21,5 +23,13 @@ public class ShadowPreferenceManager {
         ShadowApplication shadowApplication = shadowOf((Application) context.getApplicationContext());
         return new TestSharedPreferences(shadowApplication.getSharedPreferenceMap(), "__default__", Context.MODE_PRIVATE);
     }
+    
+    @Implementation
+    public SharedPreferences getSharedPreferences(){
+    	ShadowApplication app = shadowOf(Robolectric.application);
+    	return new TestSharedPreferences(app.getSharedPreferenceMap(),"__default__", Context.MODE_PRIVATE);
+    }
+    
+    
 
 }
