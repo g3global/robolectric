@@ -17,7 +17,7 @@ public class Log {
 		String logMessage = "Test Log Message";
 		String level = "DEBUG";
 		String tag = "MyTag";
-		String expectedMessage = "ANDROID LOG:\n\tLEVEL:" + level + "TAG:"+ tag + "Message:" + logMessage;
+		String expectedMessage = "ANDROID LOG-[LEVEL:" + level + "] TAG:"+ tag + "\tMSG:" + logMessage;
 		
 		String actual = ShadowLog.buildLogMessageForDisplay(level, tag, logMessage);
 		

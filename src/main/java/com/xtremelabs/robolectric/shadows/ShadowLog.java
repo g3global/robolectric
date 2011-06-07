@@ -10,7 +10,7 @@ import com.xtremelabs.robolectric.internal.Implements;
 @Implements(Log.class)
 public class ShadowLog {
 	
-	private static final String messageFormat = "ANDROID LOG:\n\tLEVEL:{0} TAG:{1} Message:{2}";
+	private static final String messageFormat = "ANDROID LOG-[LEVEL:{0}] TAG:{1}\tMSG:{2}";
 	private static final String DEBUG_LEVEL = "DEBUG";
 	private static final String INFO_LEVEL = "INFO";
 	private static final String WARNING_LEVEL = "WARN";
